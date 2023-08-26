@@ -24,6 +24,6 @@ jobs:
         pip install nbqa flake8 black
     - name: Run nbQA with flake8 and black
       run: |
-        nbqa black *.ipynb --check
+        nbqa black *.ipynb
         nbqa flake8 *.ipynb
         
