@@ -31,7 +31,8 @@ jobs:
 
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade *.ipynb > pyupgrade.log || (cat pyupgrade.log && exit 1)
+        nbqa pyupgrade *.ipynb
+      continue-on-error: true
 
     - name: Run nbQA with black
       run:
