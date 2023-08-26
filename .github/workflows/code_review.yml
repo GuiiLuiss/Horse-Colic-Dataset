@@ -43,7 +43,7 @@ jobs:
       id: getfile
       run:
       # Armazenar os nomes dos arquivos modificados na variável CHANGED_FILES
-        echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep .ipynb)" >> $GITHUB_ENV
+        echo "CHANGED_FILES=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} | grep .ipynb)" >> $GITHUB_ENV
     
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
