@@ -37,28 +37,35 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install nbqa isort pyupgrade ruff black
-
+    
+    # Identificar os arquivos .ipynb modificados no último commit
+    - name: Get changed notebooks
+      id: getfile
+      run:
+      # Armazenar os nomes dos arquivos modificados na variável CHANGED_FILES
+        echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep .ipynb)" >> $GITHUB_ENV
+    
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
-      run: |
-        nbqa isort *.ipynb
+      run:
+        nbqa isort $CHANGED_FILES
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade *.ipynb
+        nbqa pyupgrade $CHANGED_FILES
       # Continuar mesmo se houver erro
       continue-on-error: true
 
     # Etapa para executar o black nos notebooks
     - name: Run nbQA with black
       run:
-        nbqa black *.ipynb --line-length 120
+        nbqa black $CHANGED_FILES --line-length 120
 
     # Etapa para executar o ruff nos notebooks
     - name: Run nbQA with ruff
       run:
-        nbqa ruff *.ipynb --ignore=E203,E266,E402,E501
+        nbqa ruff $CHANGED_FILES --ignore=E203,E266,E402,E501
 
     # Etapa para verificar se houve modificações nos arquivos
     - name: Check for modified files
