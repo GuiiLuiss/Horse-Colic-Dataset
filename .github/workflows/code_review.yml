@@ -45,10 +45,14 @@ jobs:
       # Armazenar os nomes dos arquivos modificados na variável CHANGED_FILES
         echo "CHANGED_FILES=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} | grep .ipynb)" >> $GITHUB_ENV
     
+    - name: Debug - Print changed files
+      run: |
+        echo "Changed files: $CHANGED_FILES"
+
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        nbqa isort $CHANGED_FILES
+        nbqa isort "$CHANGED_FILES"
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
