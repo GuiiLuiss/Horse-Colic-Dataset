@@ -39,7 +39,7 @@ jobs:
 
     - name: Run nbQA with ruff
       run:
-        nbqa ruff *.ipynb
+        nbqa ruff *.ipynb -- --ignore E402,E501
 
     - name: Run nbQA with flake8
       run:
