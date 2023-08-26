@@ -43,7 +43,7 @@ jobs:
       id: getfile
       run:
       # Armazenar os nomes dos arquivos modificados na variável CHANGED_FILES
-        echo "CHANGED_FILES=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} | grep .ipynb)" >> $GITHUB_ENV
+        echo "CHANGED_FILES=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)" >> $GITHUB_ENV
     
     - name: Debug - Print changed files
       run: |
