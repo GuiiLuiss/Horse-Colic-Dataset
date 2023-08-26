@@ -39,7 +39,7 @@ jobs:
 
     - name: Run nbQA with ruff
       run:
-        nbqa ruff *.ipynb --ignore E203, W503, E266, E402, E501
+        nbqa ruff *.ipynb --ignore E203,W503,E266,E402,E501
 
     - name: Check for modified files
       id: git-check
