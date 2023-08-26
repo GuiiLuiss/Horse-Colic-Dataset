@@ -31,7 +31,7 @@ jobs:
 
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade *.ipynb
+        nbqa pyupgrade *.ipynb || (echo "Pyupgrade failed on the following:" && exit 1)
 
     - name: Run nbQA with black
       run:
