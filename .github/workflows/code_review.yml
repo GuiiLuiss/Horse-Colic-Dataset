@@ -47,29 +47,29 @@ jobs:
     
     - name: Debug - Print changed files
       run: |
-        echo "Changed files: $CHANGED_FILES"
+        echo "${{ env.CHANGED_FILES }}"
 
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        nbqa isort "$CHANGED_FILES"
+        nbqa isort "${{ env.CHANGED_FILES }}"
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade $CHANGED_FILES
+        nbqa pyupgrade "${{ env.CHANGED_FILES }}"
       # Continuar mesmo se houver erro
       continue-on-error: true
 
     # Etapa para executar o black nos notebooks
     - name: Run nbQA with black
       run:
-        nbqa black $CHANGED_FILES --line-length 120
+        nbqa black "${{ env.CHANGED_FILES }}" --line-length 120
 
     # Etapa para executar o ruff nos notebooks
     - name: Run nbQA with ruff
       run:
-        nbqa ruff $CHANGED_FILES --ignore=E203,E266,E402,E501
+        nbqa ruff "${{ env.CHANGED_FILES }}" --ignore=E203,E266,E402,E501
 
     # Etapa para verificar se houve modificações nos arquivos
     - name: Check for modified files
