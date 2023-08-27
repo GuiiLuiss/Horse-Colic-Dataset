@@ -41,7 +41,7 @@ jobs:
     - name: Get list of changed notebooks
       id: get-notebooks
       run: |
-        notebooks=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep \.ipynb)
+        notebooks=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)
         echo "NOTEBOOKS=$notebooks" >> $GITHUB_ENV
     
     - name: Print notebooks
