@@ -49,11 +49,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install nbqa isort pyupgrade ruff black
     
-    #Variável
+    # Variável
     - name: Set variable with git command output
       run: echo "MY_VARIABLE=$(git diff-tree --no-commit-id --name-status -r HEAD | grep -E '^[AM]\s' | cut -f2- | grep .ipynb | tr '\n' ' ')" >> $GITHUB_ENV
     
-    # Usando variável
+    # Visualizando variável $MY_VARIABLE
     - name: Use the variable
       run: echo $MY_VARIABLE
   
