@@ -38,39 +38,31 @@ jobs:
         python -m pip install --upgrade pip
         pip install nbqa isort pyupgrade ruff black
     
-    # Identificar os arquivos .ipynb modificados no último commit
-    - name: Get changed notebooks
-      id: getfile
-      run:
-      # Armazenar os nomes dos arquivos modificados na variável CHANGED_FILES
-        CHANGED_FILES=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)
-        echo "::set-output name=changed_files::$CHANGED_FILES"
-
     - name: Debug - Print changed files
       run: |
-        echo "::set-output name=changed_files::$CHANGED_FILES"
+        echo git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb
 
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        nbqa isort "${{ steps.getfile.outputs.changed_files }}"
+        nbqa isort git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade "${{ env.CHANGED_FILES }}"
+        nbqa pyupgrade "git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb
       # Continuar mesmo se houver erro
       continue-on-error: true
 
     # Etapa para executar o black nos notebooks
     - name: Run nbQA with black
       run:
-        nbqa black "${{ env.CHANGED_FILES }}" --line-length 120
+        nbqa black git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb --line-length 120
 
     # Etapa para executar o ruff nos notebooks
     - name: Run nbQA with ruff
       run:
-        nbqa ruff "${{ env.CHANGED_FILES }}" --ignore=E203,E266,E402,E501
+        nbqa ruff git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb --ignore=E203,E266,E402,E501
 
     # Etapa para verificar se houve modificações nos arquivos
     - name: Check for modified files
