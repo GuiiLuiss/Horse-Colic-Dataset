@@ -51,7 +51,7 @@ jobs:
     
     #Variável
     - name: Set variable with git command output
-      run: echo "MY_VARIABLE=$(git diff --name-only origin/develop | grep .ipynb)" >> $GITHUB_ENV
+      run: echo "MY_VARIABLE=$(git diff --name-only origin/master | grep .ipynb)" >> $GITHUB_ENV
 
     # Usando variável
     - name: Use the variable
