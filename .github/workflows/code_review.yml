@@ -25,6 +25,8 @@ jobs:
     # Etapa para obter o código do repositório
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     # Etapa para configurar o Python
     - name: Set up Python
