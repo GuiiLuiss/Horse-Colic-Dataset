@@ -43,16 +43,17 @@ jobs:
       id: getfile
       run:
       # Armazenar os nomes dos arquivos modificados na variável CHANGED_FILES
-        CHANGED_FILES=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb) >> $GITHUB_ENV
+        CHANGED_FILES=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)
+        echo "::set-output name=changed_files::$CHANGED_FILES"
 
     - name: Debug - Print changed files
       run: |
-        echo env.CHANGED_FILES
+        echo "::set-output name=changed_files::$CHANGED_FILES"
 
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        nbqa isort "${{ env.CHANGED_FILES }}"
+        nbqa isort "${{ steps.getfile.outputs.changed_files }}"
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
