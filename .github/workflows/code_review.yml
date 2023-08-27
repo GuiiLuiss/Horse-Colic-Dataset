@@ -51,8 +51,8 @@ jobs:
     
     #Variável
     - name: Set variable with git command output
-      run: echo "MY_VARIABLE=$(git diff-tree --no-commit-id --name-only -r HEAD | grep .ipynb | tr '\n' ' ')" >> $GITHUB_ENV
-
+      run: echo "MY_VARIABLE=$(git diff-tree --no-commit-id --name-status -r HEAD | grep -E '^[AM]\s' | cut -f2- | grep .ipynb | tr '\n' ' ')" >> $GITHUB_ENV
+    
     # Usando variável
     - name: Use the variable
       run: echo $MY_VARIABLE
