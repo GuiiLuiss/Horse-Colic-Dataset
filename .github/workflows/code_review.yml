@@ -38,55 +38,36 @@ jobs:
         python -m pip install --upgrade pip
         pip install nbqa isort pyupgrade ruff black
     
-    - name: Get list of changed notebooks
-      id: get-notebooks
-      run: |
-        notebooks=""
-        if [[ "${{ github.event_name }}" == "push" ]]; then
-          files="${{ toJson(github.event.head_commit.modified) }} ${{ toJson(github.event.head_commit.added) }}"
-        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          files="${{ toJson(github.event.pull_request.modified) }} ${{ toJson(github.event.pull_request.added) }}"
-        fi
-        for file in $files; do
-          if [[ "$file" == *.ipynb ]]; then
-            notebooks="$notebooks $file"
-          fi
-        done
-        echo "NOTEBOOKS=$notebooks" >> $GITHUB_ENV
-    
-    - name: Print notebooks
-      run: echo $NOTEBOOKS
+    #Variável
+    - name: Set variable with git command output
+      run: echo "MY_VARIABLE=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)" >> $GITHUB_ENV
 
+    # Usando variável
+    - name: Use the variable
+      run: echo $MY_VARIABLE
+  
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        for notebook in $NOTEBOOKS; do
-          nbqa isort $notebook
-        done
+        nbqa isort *.ipynb
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
       run:
-        for notebook in $NOTEBOOKS; do
-          nbqa pyupgrade $notebook
-        done
+        nbqa pyupgrade *.ipynb
       # Continuar mesmo se houver erro
       continue-on-error: true
 
     # Etapa para executar o black nos notebooks
     - name: Run nbQA with black
       run:
-        for notebook in $NOTEBOOKS; do
-          nbqa black $notebook --line-length 120
-        done
+        nbqa black *.ipynb --line-length 120
 
     # Etapa para executar o ruff nos notebooks
     - name: Run nbQA with ruff
       run:
-        for notebook in $NOTEBOOKS; do
-          nbqa ruff $notebook --ignore=E203,E266,E402,E501
-        done
-        
+        nbqa ruff *.ipynb --ignore=E203,E266,E402,E501
+
     # Etapa para verificar se houve modificações nos arquivos
     - name: Check for modified files
       id: git-check
