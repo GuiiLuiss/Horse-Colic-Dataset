@@ -49,24 +49,24 @@ jobs:
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        nbqa isort *.ipynb
+        nbqa isort $MY_VARIABLE
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade *.ipynb
+        nbqa pyupgrade $MY_VARIABLE
       # Continuar mesmo se houver erro
       continue-on-error: true
 
     # Etapa para executar o black nos notebooks
     - name: Run nbQA with black
       run:
-        nbqa black *.ipynb --line-length 120
+        nbqa black $MY_VARIABLE --line-length 120
 
     # Etapa para executar o ruff nos notebooks
     - name: Run nbQA with ruff
       run:
-        nbqa ruff *.ipynb --ignore=E203,E266,E402,E501
+        nbqa ruff $MY_VARIABLE --ignore=E203,E266,E402,E501
 
     # Etapa para verificar se houve modificações nos arquivos
     - name: Check for modified files
