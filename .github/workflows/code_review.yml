@@ -41,7 +41,17 @@ jobs:
     - name: Get list of changed notebooks
       id: get-notebooks
       run: |
-        notebooks=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)
+        notebooks=""
+        if [[ "${{ github.event_name }}" == "push" ]]; then
+          files="${{ toJson(github.event.head_commit.modified) }} ${{ toJson(github.event.head_commit.added) }}"
+        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          files="${{ toJson(github.event.pull_request.modified) }} ${{ toJson(github.event.pull_request.added) }}"
+        fi
+        for file in $files; do
+          if [[ "$file" == *.ipynb ]]; then
+            notebooks="$notebooks $file"
+          fi
+        done
         echo "NOTEBOOKS=$notebooks" >> $GITHUB_ENV
     
     - name: Print notebooks
@@ -50,25 +60,33 @@ jobs:
     # Etapa para executar o isort nos notebooks
     - name: Run nbQA with isort
       run:
-        nbqa isort $NOTEBOOKS
+        for notebook in $NOTEBOOKS; do
+          nbqa isort $notebook
+        done
 
     # Etapa para executar o pyupgrade nos notebooks
     - name: Run nbQA with pyupgrade
       run:
-        nbqa pyupgrade $NOTEBOOKS
+        for notebook in $NOTEBOOKS; do
+          nbqa pyupgrade $notebook
+        done
       # Continuar mesmo se houver erro
       continue-on-error: true
 
     # Etapa para executar o black nos notebooks
     - name: Run nbQA with black
       run:
-        nbqa black $NOTEBOOKS --line-length 120
+        for notebook in $NOTEBOOKS; do
+          nbqa black $notebook --line-length 120
+        done
 
     # Etapa para executar o ruff nos notebooks
     - name: Run nbQA with ruff
       run:
-        nbqa ruff $NOTEBOOKS --ignore=E203,E266,E402,E501
-
+        for notebook in $NOTEBOOKS; do
+          nbqa ruff $notebook --ignore=E203,E266,E402,E501
+        done
+        
     # Etapa para verificar se houve modificações nos arquivos
     - name: Check for modified files
       id: git-check
