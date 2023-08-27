@@ -32,6 +32,15 @@ jobs:
       with:
         python-version: 3.8
 
+    # Cache
+    - name: Cache Python dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     # Etapa para instalar as dependências necessárias
     - name: Install dependencies
       run: |
@@ -40,7 +49,7 @@ jobs:
     
     #Variável
     - name: Set variable with git command output
-      run: echo "MY_VARIABLE=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep .ipynb)" >> $GITHUB_ENV
+      run: echo "MY_VARIABLE=$(git diff --name-only HEAD^ | grep .ipynb)" >> $GITHUB_ENV
 
     # Usando variável
     - name: Use the variable
